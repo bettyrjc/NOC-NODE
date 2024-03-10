@@ -3,5 +3,8 @@ node_modules/
 dist/
 .DS_Store
 logs/
-mongo/
-./mongo
+
+
+.env 
+/mongo
+/postgres
