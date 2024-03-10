@@ -8,21 +8,36 @@ import { logRespository } from "../domain/repository/log.respository";
 import { MongoLogDataSource } from "../infrastructure/datasources/mongo-log.datasource";
 import { LogSeverityLevel } from "../domain/entities/log.entity";
 import { PostgresLogDataSource } from "../infrastructure/datasources/postgres-log.datasource";
+import { CheckServiceMultiple } from "../domain/use-cases/checks/check-service-multiple";
 
-const logRepository = new logRespositoryImpl(
-  // new FileSystemDataSource() //eventually can change to another datasource
-  // new MongoLogDataSource()
+// const logRepository = new logRespositoryImpl(
+//   // new FileSystemDataSource() //eventually can change to another datasource
+//   // new MongoLogDataSource()
+//   new PostgresLogDataSource()
+// );
+
+const fsLogRespository = new logRespositoryImpl(new FileSystemDataSource());
+const mongoLogRepository = new logRespositoryImpl(new MongoLogDataSource());
+const postgresLogRepository = new logRespositoryImpl(
   new PostgresLogDataSource()
 );
-// const emailService = new EmailService();
 
 export class Server {
   public static async start() {
     // console.log("Server started");
+    // CronService.createJob("*/5 * * * * *", () => {
+    //   const url = "https://www.ddd.com/";
+    //   new CheckService(
+    //     logRepository,
+    //     () => console.log(`url is ok ${url}`),
+    //     (error) => console.log(error)
+    //   ).execute(url);
+    // });
+    //grabar en todas las db y log local
     CronService.createJob("*/5 * * * * *", () => {
       const url = "https://www.ddd.com/";
-      new CheckService(
-        logRepository,
+      new CheckServiceMultiple(
+        [fsLogRespository, mongoLogRepository, postgresLogRepository],
         () => console.log(`url is ok ${url}`),
         (error) => console.log(error)
       ).execute(url);
@@ -44,7 +59,5 @@ export class Server {
     // ).execute(["bettyjimenez3010@gmail.com","betty@getnada.com",]);
     // const logs = await logRepository.getLogs(LogSeverityLevel.high);
     // console.log("logs", logs);
-
-
   }
 }
