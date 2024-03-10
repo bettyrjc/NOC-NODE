@@ -11,7 +11,7 @@ async function main() {
     mongoUrl: envs.MONGO_URL,
     dbName: envs.MONGO_DB_NAME,
   });
-  // Server.start();
+  Server.start();
   // console.log(envs);
 
   //crear una coleccion 
@@ -22,8 +22,8 @@ async function main() {
   //   origin: "app.ts",
   // });
   // await newLog.save();
-  const logs = await LogModel.find();
-  console.log('newLog', logs)
+  // const logs = await LogModel.find();
+  // console.log('newLog', logs)
 
 
 }
